@@ -1,0 +1,4 @@
+baseURL = 'https://bensantora.com/'
+languageCode = 'en-us'
+title = 'Ben Santora'
+disableKinds = ['taxonomy', 'term']
