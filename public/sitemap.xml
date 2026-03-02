@@ -3,5 +3,12 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://bensantora.com/</loc>
+    <lastmod>2026-01-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://bensantora.com/posts/llama-cpp-bare-metal-linux/</loc>
+    <lastmod>2026-01-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://bensantora.com/posts/</loc>
+    <lastmod>2026-01-20T00:00:00+00:00</lastmod>
   </url>
 </urlset>

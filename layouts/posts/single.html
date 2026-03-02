@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }} | Ben Santora</title>
+    <meta name="description" content="{{ .Params.description }}">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": ["Article", "TechArticle"],
+      "headline": {{ .Title | jsonify }},
+      "description": {{ .Params.description | jsonify }},
+      "author": {
+        "@type": "Person",
+        "name": "Ben Santora"
+      },
+      "datePublished": "{{ .Date.Format "2006-01-02" }}",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ .Permalink }}"
+      },
+      "keywords": "llama.cpp, bare metal inference, CPU-only LLM, AVX-512, Linux, GGUF, local AI, Ollama alternative, build from source, quantization"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between llama.cpp and Ollama?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "llama.cpp is the raw C++ inference engine. Ollama wraps it with a management layer and background service, adding overhead and abstracting hardware control."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why compile llama.cpp from source instead of using a prebuilt binary?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Compiling with GGML_NATIVE=ON auto-enables AVX2 and AVX-512 on supported hardware, yielding better throughput than generic binaries built for broad compatibility."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What hardware is required to run 7B-8B models on CPU-only Linux?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Intel 11th Gen or AMD Ryzen 5000 series or newer, 12GB+ RAM, and any modern Linux distribution. No GPU is required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I check if my CPU supports AVX-512?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Run: lscpu | grep -E --color=always 'avx(2|512)'. Look for avx512_vnni in the output for AI-optimized instruction support."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the best quantization for a 12GB RAM system?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Q4_K_M (4-bit quantization) provides the best balance of output quality and memory efficiency for 7B-8B parameter models on 12GB RAM."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I remove the --mlock flag?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Remove --mlock if model loading takes longer than 4-5 minutes. This indicates the system lacks sufficient free RAM to pin the model, risking a hard failure."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <style>
+        :root {
+            --terminal-green: #98c9a3;
+            --text: #e0e0e0;
+            --bg: #0d0d0d;
+            --card-bg: #1e1e1e;
+            --card-border: #2a2a2a;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.8;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            font-size: 1.1rem;
+        }
+        header {
+            border-bottom: 3px solid var(--terminal-green);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1.site-title { margin: 0; color: var(--terminal-green); font-size: 2.5rem; }
+        h1.post-title { color: var(--terminal-green); font-size: 1.8rem; line-height: 1.3; margin-bottom: 0.5rem; }
+        h2 { color: var(--terminal-green); border-left: 5px solid var(--terminal-green); padding-left: 15px; margin-top: 2.5rem; }
+        h3 { color: var(--terminal-green); padding-left: 22px; }
+        a { color: var(--terminal-green); text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; color: white; }
+        nav {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            border-top: 1px solid var(--terminal-green);
+            padding-top: 15px;
+        }
+        nav a { color: white; font-weight: bold; padding: 5px 10px; border: 1px solid transparent; }
+        nav a:hover { color: var(--terminal-green); border-bottom: 2px solid var(--terminal-green); }
+        .post-meta { color: #666; font-size: 0.95rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--card-border); }
+        p { margin-bottom: 1.2rem; }
+        hr { border: none; border-top: 1px solid var(--card-border); margin: 2.5rem 0; }
+        pre {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-left: 4px solid var(--terminal-green);
+            padding: 16px 20px;
+            overflow-x: auto;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+        }
+        code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.9rem; color: var(--terminal-green); }
+        pre code { color: var(--text); }
+        strong { color: white; }
+        footer { margin-top: 50px; font-size: 1rem; color: #555; border-top: 1px solid #2a2a2a; padding-top: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="site-title">Ben Santora</h1>
+        <p><strong>Linux Operating System</strong></p>
+        <nav>
+            <a href="/">Home</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1 class="post-title">{{ .Title }}</h1>
+        <div class="post-meta">{{ .Date.Format "January 2, 2006" }} &mdash; Ben Santora</div>
+        {{ .Content }}
+    </main>
+
+    <footer>
+        <p>Ben Santora | &copy; 2026</p>
+        <p><a href="https://github.com/bensantora-dev" target="_blank" rel="noopener noreferrer">github.com/bensantora-dev</a></p>
+    </footer>
+</body>
+</html>
