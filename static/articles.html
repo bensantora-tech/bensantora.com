@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ben Santora | ben-santora</title>
-    <meta name="description" content="Debian Linux configurations, Bash scripts, and system utilities by Ben Santora.">
+    <title>Articles | Ben Santora</title>
+    <meta name="description" content="Tech articles and guides by Ben Santora.">
     <style>
         :root {
             --terminal-green: #98c9a3;
@@ -52,6 +52,22 @@
             color: var(--text);
             margin: 20px 0 0 0;
         }
+        nav {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            border-top: 1px solid var(--terminal-green);
+            padding-top: 15px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border: 1px solid transparent;
+        }
+        nav a:hover {
             color: var(--terminal-green);
             border-bottom: 2px solid var(--terminal-green);
         }
@@ -62,40 +78,29 @@
             border-top: 1px solid #2a2a2a;
             padding-top: 10px;
         }
-        main {
-            position: relative;
-        }
-        .month-img {
-            position: absolute;
-            top: -10px;
-            right: 10px;
-            width: 60px;
-            height: auto;
-            opacity: 0.9;
-        }
     </style>
 </head>
 <body>
     <header>
         <h1>Ben Santora</h1>
         <p><strong>Linux Operating System</strong></p>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/articles.html">Articles</a>
+        </nav>
     </header>
 
     <main>
-        <h3>March 2026</h3>
-        <img src="/images/ben80.png" alt="Logo" class="month-img">
+        <h2>Articles</h2>
         <div class="repo-list">
             <div class="repo-item">
-                <a href="https://github.com/bensantora-dev">Ben Santora - Bio</a>
-                <p>Linux power user and systems optimizer working at the intersection of software configuration and low-level hardware communication. Systems-level driver tuning, display server, audio pipeline configuration, and general optimization of Debian-based environments with minimal window manager setups.</p>
-                <p>FOSS and Right to Repair Advocate. Active in hardware restoration and rescue — returning aging or broken machines to productive use through careful diagnosis, component-level reasoning, and a preference for lean, purpose-built Linux environments over heavy defaults.</p>
-                <p>The through-line across all of it: a conviction that modern systems are over-abstracted by design, and that real ownership of a machine means understanding what each layer is doing and why. Recent work includes running small language models in CPU-only mode - bare metal inference on Linux Debian OS.</p>
+                <a href="/posts/llama-cpp-bare-metal-linux.html">Running llama.cpp Bare-Metal on Linux</a>
+                <p>A step-by-step guide to compiling llama.cpp from source with native AVX-512 optimizations, bypassing Ollama for faster local LLM inference without a GPU.</p>
             </div>
-			<div class="repo-item" style="margin-top: 1.5rem;">
-			<a href="/posts/llama-cpp-bare-metal-linux/">Running llama.cpp Bare-Metal on Linux - (Click Here for Full Article)</a>
-			<p>A step-by-step guide to compiling llama.cpp from source with native AVX-512 optimizations, bypassing Ollama for faster local LLM inference without a GPU. Covers hardware requirements, AVX-512 detection, source compilation, model quantization, and command-line operation.</p>
-			</div>
-		</div>
+            <div class="repo-item">
+                <a href="/posts/llm-hallucination.html">LLMs - A Prompt to Force Hallucination</a>
+                <p>Testing LLMs to identify their strengths and weaknesses, how they reason and other traits unique to each model.</p>
+            </div>
         </div>
     </main>
 
