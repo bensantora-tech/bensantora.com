@@ -1,15 +1,9 @@
 ---
-title: "How to Run llama.cpp Bare-Metal on Linux for Maximum CPU Inference Performance"
+title: "llama.cpp Bare-Metal on Linux"
 date: 2026-01-20
-author: "Ben Santora"
-description: "A step-by-step guide to compiling llama.cpp from source with native AVX-512 optimizations on Linux, bypassing Ollama for faster local LLM inference without a GPU."
-tags: ["llama.cpp", "linux", "local AI", "CPU inference", "AVX-512"]
-draft: false
 ---
 
 Compiling llama.cpp from source with native CPU optimizations eliminates wrapper overhead and maximizes inference performance on Linux systems without dedicated GPUs. This guide walks through every step — from auditing your hardware to running your first local conversation.
-
----
 
 ## What Is the Difference Between llama.cpp and Ollama?
 
@@ -17,15 +11,11 @@ llama.cpp is the inference engine: a raw C++ implementation of the Llama archite
 
 Running llama.cpp directly gives you three concrete advantages. First, transparency: when the process ends, your RAM is fully released with no hidden daemons lingering. Second, performance: direct execution yields measurably faster token generation by eliminating software abstraction layers. Third, hardware mastery: you can explicitly target your CPU's instruction sets — like AVX-512 — which generic prebuilt binaries often disable for broad compatibility.
 
----
-
 ## What Hardware Do You Need to Run Local LLMs on Linux?
 
 To run modern 7B or 8B parameter models (such as Llama 3.1 or Mistral) comfortably on a CPU-only Linux machine, you need a PC from 2020 or newer, 12GB or more of RAM (8GB is possible but risks swapping), an Intel 11th Gen or AMD Ryzen 5000 series CPU or better, and any modern Linux distribution — Debian or Ubuntu are recommended for their straightforward package management.
 
 If your machine falls below these specs, start with a smaller model. A 1.5B or 4B parameter model will load and respond quickly and give you a working baseline to build from.
-
----
 
 ## How to Check if Your CPU Supports AVX-512
 
@@ -35,8 +25,6 @@ lscpu | grep -E --color=always "avx(2|512)"
 ```
 
 AVX2 is the standard baseline and is present on most CPUs from 2015 onward. AVX-512 VNNI is the gold standard — if you see `avx512_vnni` in the output, your CPU can execute AI-specific multiply-accumulate operations in a single instruction, providing a significant throughput increase over AVX2 alone.
-
----
 
 ## How to Build llama.cpp from Source with Native CPU Optimizations
 
@@ -56,8 +44,6 @@ cmake --build build --config Release -j $(nproc)
 
 The `-j $(nproc)` flag parallelizes the build across all available CPU threads, which significantly reduces compile time on modern hardware.
 
----
-
 ## What Is the Best Quantization for a 12GB RAM System?
 
 llama.cpp uses the GGUF model format, which you download directly from Hugging Face rather than through a model registry. For a machine with 12GB of RAM, Q4_K_M (4-bit quantization with K-means optimization) is the recommended balance of quality and memory efficiency for 7B–8B parameter models.
@@ -68,8 +54,6 @@ wget -O models/llama-3.1-8b-q4.gguf \
 ```
 
 If you're on a machine at the lower end of the RAM requirement, download a Q4_K_M of a 4B model instead. The quantization level matters less than fitting the model cleanly into physical RAM without triggering swap.
-
----
 
 ## How to Run llama.cpp from the Command Line
 
@@ -88,13 +72,9 @@ Because this command is verbose, store it as a shell alias in your `.bashrc` so 
 
 `--color` visually separates your input from the model's output in the terminal, making multi-turn conversations easier to follow.
 
----
-
 ## Troubleshooting Slow Load Times
 
 If the model loads slowly or the terminal hangs, work through this sequence. First, remove `--mlock` and retry — this is the most common cause of load failures on systems near the RAM ceiling. Second, run `free -h` before loading to confirm you have at least 500MB of headroom above the model's expected footprint. Third, if performance is still poor, drop to a smaller model. Get a 1.5B model running cleanly, then work up to larger sizes incrementally.
-
----
 
 ## FAQ
 

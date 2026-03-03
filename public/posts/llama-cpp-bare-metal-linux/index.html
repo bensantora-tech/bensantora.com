@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=44719&amp;path=livereload" data-no-instant defer></script>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>How to Run llama.cpp Bare-Metal on Linux for Maximum CPU Inference Performance | Ben Santora</title>
-    <meta name="description" content="A step-by-step guide to compiling llama.cpp from source with native AVX-512 optimizations on Linux, bypassing Ollama for faster local LLM inference without a GPU.">
+    <title>llama.cpp Bare-Metal on Linux | Ben Santora</title>
+    <meta name="description" content="">
 
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": ["Article", "TechArticle"],
-      "headline": "\"How to Run llama.cpp Bare-Metal on Linux for Maximum CPU Inference Performance\"",
-      "description": "\"A step-by-step guide to compiling llama.cpp from source with native AVX-512 optimizations on Linux, bypassing Ollama for faster local LLM inference without a GPU.\"",
+      "headline": "\"llama.cpp Bare-Metal on Linux\"",
+      "description": "null",
       "author": {
         "@type": "Person",
         "name": "Ben Santora"
@@ -19,7 +19,7 @@
       "datePublished": "2026-01-20",
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "http:\/\/localhost:44719\/posts\/llama-cpp-bare-metal-linux\/"
+        "@id": "http:\/\/localhost:1313\/posts\/llama-cpp-bare-metal-linux\/"
       },
       "keywords": "llama.cpp, bare metal inference, CPU-only LLM, AVX-512, Linux, GGUF, local AI, Ollama alternative, build from source, quantization"
     }
@@ -137,23 +137,19 @@
     </header>
 
     <main>
-        <h1 class="post-title">How to Run llama.cpp Bare-Metal on Linux for Maximum CPU Inference Performance</h1>
+        <h1 class="post-title">llama.cpp Bare-Metal on Linux</h1>
         <div class="post-meta">January 20, 2026 &mdash; Ben Santora</div>
         <p>Compiling llama.cpp from source with native CPU optimizations eliminates wrapper overhead and maximizes inference performance on Linux systems without dedicated GPUs. This guide walks through every step — from auditing your hardware to running your first local conversation.</p>
-<hr>
 <h2 id="what-is-the-difference-between-llamacpp-and-ollama">What Is the Difference Between llama.cpp and Ollama?</h2>
 <p>llama.cpp is the inference engine: a raw C++ implementation of the Llama architecture that performs the core matrix math of AI inference directly on your hardware. Ollama is a wrapper around it — bundling llama.cpp with a Go-based management layer, a model registry, and a persistent background service that consumes RAM even when you&rsquo;re not using it.</p>
 <p>Running llama.cpp directly gives you three concrete advantages. First, transparency: when the process ends, your RAM is fully released with no hidden daemons lingering. Second, performance: direct execution yields measurably faster token generation by eliminating software abstraction layers. Third, hardware mastery: you can explicitly target your CPU&rsquo;s instruction sets — like AVX-512 — which generic prebuilt binaries often disable for broad compatibility.</p>
-<hr>
 <h2 id="what-hardware-do-you-need-to-run-local-llms-on-linux">What Hardware Do You Need to Run Local LLMs on Linux?</h2>
 <p>To run modern 7B or 8B parameter models (such as Llama 3.1 or Mistral) comfortably on a CPU-only Linux machine, you need a PC from 2020 or newer, 12GB or more of RAM (8GB is possible but risks swapping), an Intel 11th Gen or AMD Ryzen 5000 series CPU or better, and any modern Linux distribution — Debian or Ubuntu are recommended for their straightforward package management.</p>
 <p>If your machine falls below these specs, start with a smaller model. A 1.5B or 4B parameter model will load and respond quickly and give you a working baseline to build from.</p>
-<hr>
 <h2 id="how-to-check-if-your-cpu-supports-avx-512">How to Check if Your CPU Supports AVX-512</h2>
 <p>AVX (Advanced Vector Extensions) is the hardware feature that makes local AI practical on consumer CPUs. Run the following command to audit your CPU&rsquo;s vector capabilities:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>lscpu | grep -E --color<span style="color:#f92672">=</span>always <span style="color:#e6db74">&#34;avx(2|512)&#34;</span>
 </span></span></code></pre></div><p>AVX2 is the standard baseline and is present on most CPUs from 2015 onward. AVX-512 VNNI is the gold standard — if you see <code>avx512_vnni</code> in the output, your CPU can execute AI-specific multiply-accumulate operations in a single instruction, providing a significant throughput increase over AVX2 alone.</p>
-<hr>
 <h2 id="how-to-build-llamacpp-from-source-with-native-cpu-optimizations">How to Build llama.cpp from Source with Native CPU Optimizations</h2>
 <p>Compiling from source rather than downloading a prebuilt binary is the critical step. The <code>GGML_NATIVE=ON</code> flag instructs the compiler to auto-detect and enable every instruction set your CPU supports, including AVX2 and AVX-512. A generic binary cannot do this — it must target the lowest common denominator for portability.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Install build dependencies</span>
@@ -167,14 +163,12 @@
 </span></span><span style="display:flex;"><span>cmake -B build -DGGML_NATIVE<span style="color:#f92672">=</span>ON -DCMAKE_BUILD_TYPE<span style="color:#f92672">=</span>Release
 </span></span><span style="display:flex;"><span>cmake --build build --config Release -j <span style="color:#66d9ef">$(</span>nproc<span style="color:#66d9ef">)</span>
 </span></span></code></pre></div><p>The <code>-j $(nproc)</code> flag parallelizes the build across all available CPU threads, which significantly reduces compile time on modern hardware.</p>
-<hr>
 <h2 id="what-is-the-best-quantization-for-a-12gb-ram-system">What Is the Best Quantization for a 12GB RAM System?</h2>
 <p>llama.cpp uses the GGUF model format, which you download directly from Hugging Face rather than through a model registry. For a machine with 12GB of RAM, Q4_K_M (4-bit quantization with K-means optimization) is the recommended balance of quality and memory efficiency for 7B–8B parameter models.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir models
 </span></span><span style="display:flex;"><span>wget -O models/llama-3.1-8b-q4.gguf <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf
 </span></span></code></pre></div><p>If you&rsquo;re on a machine at the lower end of the RAM requirement, download a Q4_K_M of a 4B model instead. The quantization level matters less than fitting the model cleanly into physical RAM without triggering swap.</p>
-<hr>
 <h2 id="how-to-run-llamacpp-from-the-command-line">How to Run llama.cpp from the Command Line</h2>
 <p>The primary binary is <code>llama-cli</code>. The following command starts an interactive conversation session with sensible defaults:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./build/bin/llama-cli -m models/llama-3.1-8b-q4.gguf -cnv --mlock -t <span style="color:#ae81ff">4</span> --color
@@ -183,10 +177,8 @@
 <p><code>--mlock</code> pins the model to physical RAM, preventing the OS from swapping any portion of it to disk. This is especially important on laptops. If your model takes longer than 4–5 minutes to load, remove this flag — it indicates your system doesn&rsquo;t have enough free RAM to lock the full model, and a hard failure is possible.</p>
 <p><code>-t 4</code> sets the thread count to match your physical core count, not your logical thread count. Hyperthreading does not benefit llama.cpp inference and can reduce throughput if over-counted.</p>
 <p><code>--color</code> visually separates your input from the model&rsquo;s output in the terminal, making multi-turn conversations easier to follow.</p>
-<hr>
 <h2 id="troubleshooting-slow-load-times">Troubleshooting Slow Load Times</h2>
 <p>If the model loads slowly or the terminal hangs, work through this sequence. First, remove <code>--mlock</code> and retry — this is the most common cause of load failures on systems near the RAM ceiling. Second, run <code>free -h</code> before loading to confirm you have at least 500MB of headroom above the model&rsquo;s expected footprint. Third, if performance is still poor, drop to a smaller model. Get a 1.5B model running cleanly, then work up to larger sizes incrementally.</p>
-<hr>
 <h2 id="faq">FAQ</h2>
 <p><strong>Q: What is the difference between llama.cpp and Ollama?</strong>
 llama.cpp is the raw C++ inference engine. Ollama wraps it with a management layer and background service, adding overhead and abstracting hardware control.</p>
