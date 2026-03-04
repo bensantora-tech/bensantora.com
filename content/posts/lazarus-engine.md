@@ -1,3 +1,108 @@
+---
+title: "Go and the Lazarus Engine"
+date: 2026-01-20
+---
+
+## What Go Does in the Lazarus Engine
+
+Imagine you have an old car that still runs perfectly, but every new gas station only sells a special new fuel it can't use. The car isn't broken — it's just been abandoned by the system around it. That's exactly what happens to old computers.
+
+Go is the solution to that problem. Here's how.
+
+---
+
+### The Dependency Problem (Why Old Computers Get Stuck)
+
+Most programs don't actually work alone. They're like a chef who refuses to bring their own knives — they show up and expect the kitchen to already have everything they need. These "knives" are called libraries, and modern programs need dozens of them.
+
+On an old computer, those libraries are outdated or missing entirely. The new program shows up, looks around, and just quits. This is called a dependency failure, and it's why a perfectly good 2010 laptop often can't run 2026 software.
+
+---
+
+### What Go Does Differently
+
+Go is unusual because it lets you pack everything the program needs inside the binary itself. It's like a chef who shows up with their own knives, cutting board, pots, and ingredients — they don't need anything from the kitchen.
+
+This is called static linking. The binary we build carries its own "heart and lungs" and only needs one thing from the computer: the Linux kernel, which even very old machines have.
+
+The magic command that makes this happen is:
+
+    CGO_ENABLED=0 go build -ldflags="-s -w" -trimpath -o lazarus-audit
+
+Breaking that down in plain English:
+- CGO_ENABLED=0      — "don't borrow anything from the system, pack it all yourself"
+- -s -w              — "throw away the notes and labels we don't need, shrink the package"
+- -trimpath          — "clean up leftover file path info from your computer"
+- -o lazarus-audit   — "name the finished package lazarus-audit"
+
+The result is a single file, about 1.2 MB, that runs on almost any Linux machine ever made.
+
+---
+
+### How the Audit Code Actually Works
+
+The lazarus-audit program does three things: it reads some special files the Linux kernel keeps,
+figures out what the hardware can do, and prints a verdict.
+
+Reading /proc/cpuinfo — Linux keeps a constantly updated text file at this address that describes
+your CPU in plain text. Go opens it like any normal text file and reads it line by line, looking
+for two things: the CPU's name, and a list of its special abilities called flags.
+
+What are flags? Think of them like merit badges on a scout's uniform. Each badge means the CPU
+knows a special trick. The two badges we care about are:
+- aes — the CPU can scramble and unscramble data really fast (useful for encryption and security)
+- avx — the CPU can do many math calculations at the same time instead of one at a time
+         (useful for video, audio, and modern apps)
+
+The ARM problem we fixed — older phones, routers, and small devices use a different type of CPU
+called ARM. ARM uses a different word for its merit badge list: "Features" instead of "flags".
+The original code only looked for "flags", so it would always tell an ARM device it was BRONZE
+even if it was perfectly capable. We fixed that.
+
+Reading /proc/meminfo — same idea, different file. Linux keeps a running count of how much RAM
+the machine has here. Go reads the first relevant line, grabs the number, and converts it from
+kilobytes to gigabytes so it's human-readable.
+
+---
+
+### The Verdict System
+
+Once Go has collected all the badges, it makes a decision:
+
+    Both aes AND avx  →  GOLD   — this machine can handle anything
+    aes but no avx    →  SILVER — capable but has limits
+    neither           →  BRONZE — stick to lightweight tools
+
+This is the classification system — the whole point of the audit. Instead of just dumping raw
+data at you, it tells you in plain terms what the machine is good for.
+
+---
+
+### The Cross-Compilation Trick
+
+Here's one of Go's most powerful features. The program was written and compiled on one machine,
+but it can be built to run on a completely different type of machine — without ever touching it.
+
+    GOOS=linux GOARCH=arm go build ...
+
+This tells Go: "build this program as if you were on an ARM device." Go handles all the
+translation internally. This is how one developer on a modern laptop can produce binaries for
+a 2008 router sitting in someone's closet across the world.
+
+---
+
+### Why This Matters
+
+Every step of this project — the static binary, the /proc file reading, the cross-compilation —
+was chosen specifically because old hardware is fragile and unforgiving. Go is one of the very
+few modern languages where all of these pieces work together cleanly, without needing a
+complicated build system or a team of engineers.
+
+The result is a single file you can copy onto almost any Linux device ever made, and it just runs.
+That's the whole mission.
+
+---
+
 # Lazarus Engine
 
 > *Software should serve the machine, not the other way around.*
