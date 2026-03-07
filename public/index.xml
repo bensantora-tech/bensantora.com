@@ -58,6 +58,13 @@
       <description>first published on dev.to - thanks to that community for their interest and contributions&#xA;SLMs, LLMs and a Devious Logic Puzzle Test&#xA;Recently I was putting together some methods to test the performance of an SLM (small language model) I had running in &amp;ldquo;CPU-only&amp;rdquo; mode on my PC.&#xA;PC Specs: 2021 HP ENVY 17m-ch0xxx • CPU: 11th Gen Intel Core i7-1165G7 (4 cores, 8 threads), up to 4.7 GHz • RAM: 12 GiB (reported as 11 GiB usable), sufficient for 4B–7B quantized LLMs.</description>
     </item>
     <item>
+      <title>I Built My Own System Monitor — Because the Alternatives Were Too Fat</title>
+      <link>http://localhost:1313/posts/i-built-my-own-system-monitor/</link>
+      <pubDate>Sun, 01 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/i-built-my-own-system-monitor/</guid>
+      <description>As a Linux user, there&amp;rsquo;s a tool I&amp;rsquo;ve run for years called htop. It&amp;rsquo;s a terminal-based system monitor — CPU usage, memory, running processes. It works. But it carries dependencies I don&amp;rsquo;t need, and on a modest machine every dependency has a cost.&#xA;So I wrote my own. It&amp;rsquo;s called newtop, it&amp;rsquo;s written in Go, and it does exactly what I need and nothing else.&#xA;The Problem With Modern Tooling I run CrunchBang++ on an HP ENVY laptop.</description>
+    </item>
+    <item>
       <title>FFmpeg Has a Mandelbrot Generator Built In</title>
       <link>http://localhost:1313/posts/ffmpeg-mandelbrot/</link>
       <pubDate>Tue, 20 Jan 2026 00:00:00 +0000</pubDate>
