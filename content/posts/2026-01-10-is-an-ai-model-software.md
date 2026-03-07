@@ -3,6 +3,7 @@ layout: default
 title: "Is an AI Model Software? – A Low-Level Technical View"
 description: "A technical analysis of whether AI models like LLMs and SLMs qualify as software—examining weight files, inference engines, and the data-vs-code boundary from a systems programming perspective."
 date: 2026-02-12
+slug: "is-an-ai-model-software"
 author: "Ben Santora"
 tags: ["LLMs", "SLMs", "AI", "software engineering", "machine learning", "neural networks", "inference engines"]
 ---

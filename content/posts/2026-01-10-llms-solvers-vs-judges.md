@@ -4,6 +4,7 @@ title: "LLMs - Solvers vs Judges"
 description: "Do LLMs solve unsolvable puzzles or flag the contradiction? Testing ChatGPT, Gemini, KIMI, and others with an impossible logic puzzle reveals whether models prioritize helpfulness over truth."
 date: 2026-02-12
 author: "Ben Santora"
+slug: "llms-solvers-vs-judges"
 tags: ["LLMs", "AI testing", "logic puzzles", "reasoning", "KIMI", "ChatGPT", "Gemini"]
 ---
 

@@ -3,6 +3,7 @@ layout: default
 title: "SLMs, LLMs and a Devious Logic Puzzle Test"
 description: "Testing a poison-pill logic puzzle on a local SLM and online LLMs reveals critical differences in reasoning integrity—from variable leakage in Qwen3-4b to helpful lying in Gemini Flash."
 date: 2026-02-12
+slug: "slms-llms-logic-puzzle"
 author: "Ben Santora"
 tags: ["SLMs", "LLMs", "AI testing", "logic puzzles", "reasoning", "Qwen", "Gemini", "KIMI"]
 ---

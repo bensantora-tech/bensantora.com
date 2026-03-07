@@ -3,6 +3,7 @@ layout: default
 title: "LLMs - A Prompt to Encourage Hallucination"
 description: "What happens when you prompt an LLM with invented history? Testing ChatGPT, Gemini, Cerebras Inference, and KIMI with a fabricated historical prompt reveals how each model handles fictional facts."
 date: 2026-02-12
+slug: "llms-hallucination-prompt"
 author: "Ben Santora"
 tags: ["LLMs", "AI testing", "hallucination", "ChatGPT", "Gemini", "KIMI", "Cerebras"]
 ---

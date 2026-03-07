@@ -3,6 +3,7 @@ layout: default
 title: "LLMs - Four Tests to Challenge Reasoning"
 description: "Four diagnostic prompts that reveal how AI models handle contradictions, impossible geometry, temporal paradoxes, and infinite sets—tested across ChatGPT, Gemini, KIMI, Cerebras, and more."
 date: 2026-02-12
+slug: "llms-four-tests-to-challenge-reasoning"
 author: "Ben Santora"
 tags: ["LLMs", "AI testing", "reasoning", "logic puzzles", "spatial reasoning", "ChatGPT", "Gemini", "KIMI"]
 ---
