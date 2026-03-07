@@ -1,111 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ben Santora | ben-santora</title>
-    <meta name="description" content="Debian Linux and Software by Ben Santora.">
-    <style>
-        :root {
-            --terminal-green: #98c9a3;
-            --debian-blue: #5b9bd5;
-            --text: #e0e0e0;
-            --bg: #0d0d0d;
-            --card-bg: #1e1e1e;
-            --card-border: #2a2a2a;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background: var(--bg);
-            max-width: calc(100% - 320px);
-            margin: 40px auto;
-            padding: 0 40px;
-            font-size: 1.3rem;
-        }
-        header {
-            border-bottom: 3px solid var(--terminal-green);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        h1 { margin: 0; color: var(--terminal-green); font-size: 2.5rem; }
-        h2 { color: var(--terminal-green); border-left: 5px solid var(--terminal-green); padding-left: 15px; }
-        h3 { color: var(--terminal-green); padding-left: 22px; }
-        a { color: var(--terminal-green); text-decoration: none; font-weight: bold; }
-        a:hover { text-decoration: underline; color: white; }
-        .repo-list { list-style: none; padding: 0; }
-        .repo-item {
-            background: var(--card-bg);
-            padding: 15px 20px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            border: 1px solid var(--card-border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        }
-        .repo-item a {
-            color: var(--terminal-green);
-            font-size: 1.3rem;
-        }
-        .repo-item p {
-            color: var(--text);
-            margin: 20px 0 0 0;
-        }
-        footer {
-            margin-top: 50px;
-            font-size: 1.4rem;
-            color: #555;
-            border-top: 1px solid #2a2a2a;
-            padding-top: 10px;
-        }
-        main {
-            position: relative;
-        }
-        .month-img {
-            position: absolute;
-            top: -10px;
-            right: 10px;
-            width: 60px;
-            height: auto;
-            opacity: 0.9;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Ben Santora</h1>
-        <p><strong>Linux Operating System</strong></p>
-    </header>
+{{ define "main" }}
+    <div class="bio-card">
+        <p>Independent. Bare metal Linux. Go programming.</p>
+        <p>The through-line across everything I do is a conviction that modern systems are over-abstracted by design — and that real ownership of a machine means understanding what each layer is doing and why. My interest is in tools that do one thing and do it directly. No wrappers, no GUIs where a terminal works, no abstraction layers I don't control.</p>
+        <p>I use ffmpeg, not OBS. I run SLMs by pinning cores and calling llama.cpp directly, not through Ollama or Jan. I'd rather understand a tool at its lowest level than be managed by an interface built around it. I'm learning Go because it fits that approach — small binaries, no runtime dependencies, compiles to a single static file that runs anywhere Linux runs.</p>
+        <p>I'm a FOSS and Right to Repair advocate. Active in hardware restoration and rescue — returning aging or broken machines to productive use through careful diagnosis, component-level reasoning, and lean purpose-built Linux environments. I work at the intersection of software configuration and low-level hardware communication: driver tuning, display server, audio pipeline, system optimization on Debian-based minimal setups.</p>
+        <p>I build Linux utilities in Go and Bash. Diagnostic tools, hardware probes, system automation — the kind of thing you drop on an old machine and run without installing anything.</p>
+        <p><strong>Stack</strong>: CrunchBang++ / Openbox / tint2 — Go, Bash — static binaries, bare metal, no unnecessary dependencies.</p>
+    </div>
 
-    <main>
-        <h3>March 2026</h3>
-        <img src="/images/ben80.png" alt="Logo" class="month-img">
-        <div class="repo-list">
-            <div class="repo-item">
-                <a href="https://github.com/bensantora-dev">Ben Santora - Bio</a>
-               <p>Independent. Bare metal Linux. Go programming.</p>
-				<p>The through-line across everything I do is a conviction that modern systems are over-abstracted by design — and that real ownership of a machine means understanding what each layer is doing and why. My interest is in tools that do one thing and do it directly. No wrappers, no GUIs where a terminal works, no abstraction layers I don't control.</p>
-				<p>I use ffmpeg, not OBS. I run SLMs by pinning cores and calling llama.cpp directly, not through Ollama or Jan. I'd rather understand a tool at its lowest level than be managed by an interface built around it. I'm learning Go because it fits that approach — small binaries, no runtime dependencies, compiles to a single static file that runs anywhere Linux runs.</p>
-				<p>I'm a FOSS and Right to Repair advocate. Active in hardware restoration and rescue — returning aging or broken machines to productive use through careful diagnosis, component-level reasoning, and lean purpose-built Linux environments. I work at the intersection of software configuration and low-level hardware communication: driver tuning, display server, audio pipeline, system optimization on Debian-based minimal setups.</p>
-				<p>I build Linux utilities in Go and Bash. Diagnostic tools, hardware probes, system automation — the kind of thing you drop on an old machine and run without installing anything.</p>
-				<p><strong>Stack</strong>: CrunchBang++ / Openbox / tint2 — Go, Bash — static binaries, bare metal, no unnecessary dependencies.</p>
-				<p><em>github.com/bensantora-tech</em></p>
-            </div>
-			<div class="repo-item" style="margin-top: 1.7rem;">
-			<a href="/posts/llama-cpp-bare-metal-linux/">Running llama.cpp Bare-Metal on Linux</a>
-			<p>A step-by-step guide to compiling llama.cpp from source with native AVX-512 optimizations, bypassing Ollama for faster local LLM inference without a GPU. Covers hardware requirements, AVX-512 detection, source compilation, model quantization, and command-line operation.</p>
-			</div>
-			<div class="repo-item" style="margin-top: 1.7rem;">
-			<a href="/posts/ffmpeg-mandelbrot/">FFmpeg has a Mandelbrot Generator</a>
-			<p>FFmpeg has a Mandlebrot Generator . . ..</p>
-			</div>
-			</div>
-    </main>
-
-    <footer>
-        <p>Ben Santora | &copy; 2026</p>
-        <p><a href="https://github.com/bensantora-tech" target="_blank" rel="noopener noreferrer">github.com/bensantora-tech</a></p>
-    </footer>
-</body>
-</html>
+    <h2>Posts</h2>
+    <ul class="card-list">
+        {{ range (where .Site.RegularPages "Section" "posts").ByDate.Reverse }}
+        <li class="card">
+            <div class="card-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></div>
+            {{ with .Params.description }}<p>{{ . }}</p>{{ end }}
+            <div class="card-meta">{{ .Date.Format "January 2, 2006" }}</div>
+        </li>
+        {{ end }}
+    </ul>
+{{ end }}

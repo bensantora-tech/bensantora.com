@@ -1,5 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head><meta http-equiv="refresh" content="0; url=/"></head>
-<body></body>
-</html>
+{{ define "main" }}
+    <h1>Posts</h1>
+    <ul class="card-list">
+        {{ range .Pages.ByDate.Reverse }}
+        <li class="card">
+            <div class="card-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></div>
+            {{ with .Params.description }}<p>{{ . }}</p>{{ end }}
+            <div class="card-meta">
+                {{ .Date.Format "January 2, 2006" }}
+                {{ with .Params.tags }}
+                <div class="post-tags" style="margin-top: 6px;">
+                    {{ range . }}<a href="/tags/{{ . | urlize }}/" class="tag">{{ . }}</a>{{ end }}
+                </div>
+                {{ end }}
+            </div>
+        </li>
+        {{ end }}
+    </ul>
+{{ end }}

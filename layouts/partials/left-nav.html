@@ -1,0 +1,17 @@
+{{ $s := .Section }}{{ if .IsHome }}{{ $s = "home" }}{{ end }}
+<nav class="left-nav">
+    <span class="nav-label">Site</span>
+    <a href="/" class="{{ if eq $s "home" }}active{{ end }}">Home</a>
+
+    <span class="nav-label">Writing</span>
+    <a href="/posts/" class="{{ if eq $s "posts" }}active{{ end }}">Posts</a>
+    <a href="/notes/" class="{{ if eq $s "notes" }}active{{ end }}">Notes</a>
+
+    <span class="nav-label">Reference</span>
+    <a href="/tools/" class="{{ if eq $s "tools" }}active{{ end }}">Tools</a>
+    <a href="/hardware/" class="{{ if eq $s "hardware" }}active{{ end }}">Hardware</a>
+    <a href="/links/" class="{{ if eq $s "links" }}active{{ end }}">Links</a>
+
+    <span class="nav-label">External</span>
+    <a href="https://github.com/bensantora-tech" target="_blank" rel="noopener">GitHub ↗</a>
+</nav>

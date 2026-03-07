@@ -1,5 +1,19 @@
 baseURL = 'https://bensantora.com/'
 languageCode = 'en-us'
 title = 'Ben Santora'
-disableKinds = ['taxonomy', 'term']
+enableRobotsTXT = true
 
+[params]
+  description = "Bare metal Linux and Go programming by Ben Santora."
+  github = "https://github.com/bensantora-tech"
+
+[taxonomies]
+  tag = "tags"
+
+[markup]
+  [markup.tableOfContents]
+    endLevel = 3
+    ordered = false
+    startLevel = 2
+  [markup.goldmark.renderer]
+    unsafe = true

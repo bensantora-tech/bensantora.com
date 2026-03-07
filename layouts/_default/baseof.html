@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ partial "head.html" . }}
+    {{ block "head-extra" . }}{{ end }}
+</head>
+<body class="page-kind-{{ .Kind }}">
+    <header class="site-header">
+        <h1><a href="/">Ben Santora</a></h1>
+        <p><strong>Linux Operating System</strong></p>
+    </header>
+
+    {{ $s := .Section }}{{ if .IsHome }}{{ $s = "home" }}{{ end }}
+    <nav class="mobile-nav">
+        <a href="/" class="{{ if eq $s "home" }}active{{ end }}">Home</a>
+        <a href="/posts/" class="{{ if eq $s "posts" }}active{{ end }}">Posts</a>
+        <a href="/notes/" class="{{ if eq $s "notes" }}active{{ end }}">Notes</a>
+        <a href="/tools/" class="{{ if eq $s "tools" }}active{{ end }}">Tools</a>
+        <a href="/hardware/" class="{{ if eq $s "hardware" }}active{{ end }}">Hardware</a>
+        <a href="/links/" class="{{ if eq $s "links" }}active{{ end }}">Links</a>
+    </nav>
+
+    <div class="site-grid">
+        <aside class="left-sidebar">
+            {{ partial "left-nav.html" . }}
+        </aside>
+
+        <main class="content">
+            {{ block "main" . }}{{ end }}
+        </main>
+
+        <aside class="right-sidebar">
+            {{ block "right-sidebar" . }}{{ end }}
+        </aside>
+    </div>
+
+    {{ partial "footer.html" . }}
+</body>
+</html>

@@ -1,0 +1,20 @@
+{{ define "main" }}
+    <a class="back-link" href="{{ .Parent.RelPermalink }}">← {{ .Parent.Title }}</a>
+    <h1>{{ .Title }}</h1>
+    <div class="post-meta">
+        {{ .Date.Format "January 2, 2006" }} &mdash; Ben Santora
+        {{ with .Params.tags }}
+        <div class="post-tags">
+            {{ range . }}<a href="/tags/{{ . | urlize }}/" class="tag">{{ . }}</a>{{ end }}
+        </div>
+        {{ end }}
+    </div>
+    {{ .Content }}
+{{ end }}
+
+{{ define "right-sidebar" }}
+{{ with .TableOfContents }}
+<p class="sidebar-label">Contents</p>
+{{ . }}
+{{ end }}
+{{ end }}

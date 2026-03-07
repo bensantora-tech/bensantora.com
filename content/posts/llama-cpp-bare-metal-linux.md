@@ -1,6 +1,8 @@
 ---
 title: "llama.cpp Bare-Metal on Linux"
 date: 2026-01-20
+description: "A step-by-step guide to compiling llama.cpp from source with native AVX-512 optimizations, bypassing Ollama for faster local LLM inference without a GPU. Covers hardware requirements, AVX-512 detection, source compilation, model quantization, and command-line operation."
+tags: ["linux", "llm", "bare-metal", "cpu"]
 ---
 
 Compiling llama.cpp from source with native CPU optimizations eliminates wrapper overhead and maximizes inference performance on Linux systems without dedicated GPUs. This guide walks through every step — from auditing your hardware to running your first local conversation.

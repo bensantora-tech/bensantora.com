@@ -2,144 +2,374 @@
 <html lang="en">
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>llama.cpp Bare-Metal on Linux | Ben Santora</title>
-    <meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>llama.cpp Bare-Metal on Linux | Ben Santora</title>
+<meta name="description" content="A step-by-step guide to compiling llama.cpp from source with native AVX-512 optimizations, bypassing Ollama for faster local LLM inference without a GPU. Covers hardware requirements, AVX-512 detection, source compilation, model quantization, and command-line operation.">
+<meta name="author" content="Ben Santora">
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": ["Article", "TechArticle"],
-      "headline": "\"llama.cpp Bare-Metal on Linux\"",
-      "description": "null",
-      "author": {
-        "@type": "Person",
-        "name": "Ben Santora"
-      },
-      "datePublished": "2026-01-20",
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "http:\/\/localhost:1313\/posts\/llama-cpp-bare-metal-linux\/"
-      },
-      "keywords": "llama.cpp, bare metal inference, CPU-only LLM, AVX-512, Linux, GGUF, local AI, Ollama alternative, build from source, quantization"
+<meta property="og:title" content="llama.cpp Bare-Metal on Linux">
+<meta property="og:description" content="A step-by-step guide to compiling llama.cpp from source with native AVX-512 optimizations, bypassing Ollama for faster local LLM inference without a GPU. Covers hardware requirements, AVX-512 detection, source compilation, model quantization, and command-line operation.">
+<meta property="og:url" content="http://localhost:1313/posts/llama-cpp-bare-metal-linux/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Ben Santora">
+
+<link rel="alternate" type="application/rss+xml" title="Ben Santora" href="/index.xml">
+<link rel="alternate" type="application/rss+xml" title="Posts — Ben Santora" href="/posts/index.xml">
+
+<style>
+ 
+:root {
+    --green:   #98c9a3;
+    --text:    #e0e0e0;
+    --bg:      #0d0d0d;
+    --card-bg: #1e1e1e;
+    --border:  #2a2a2a;
+    --muted:   #666;
+    --dim:     #888;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--bg);
+    margin: 0;
+    padding: 0;
+    font-size: 1.3rem;
+}
+
+ 
+.site-header {
+    border-bottom: 3px solid var(--green);
+    text-align: center;
+    padding: 28px 20px 18px;
+}
+.site-header h1 { margin: 0; font-size: 2.2rem; }
+.site-header h1 a { color: var(--green); text-decoration: none; }
+.site-header h1 a:hover { color: white; text-decoration: none; }
+.site-header p { margin: 4px 0 0; }
+
+ 
+.mobile-nav {
+    display: none;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+}
+.mobile-nav a {
+    display: inline-block;
+    color: var(--dim);
+    text-decoration: none;
+    font-weight: normal;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+}
+.mobile-nav a:hover,
+.mobile-nav a.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+    text-decoration: none;
+}
+
+ 
+.site-grid {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 880px);
+    column-gap: 40px;
+    max-width: 1190px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    align-items: start;
+}
+ 
+.page-kind-page .site-grid {
+    grid-template-columns: 190px minmax(0, 880px) 210px;
+    max-width: 1400px;
+}
+.right-sidebar { display: none; }
+.page-kind-page .right-sidebar { display: block; }
+
+ 
+.left-sidebar {
+    position: sticky;
+    top: 40px;
+}
+.left-nav { display: flex; flex-direction: column; }
+.nav-label {
+    font-size: 0.965rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #444;
+    padding: 14px 10px 4px;
+    user-select: none;
+}
+.left-nav a {
+    color: var(--dim);
+    text-decoration: none;
+    font-weight: normal;
+    padding: 6px 10px;
+    font-size: 1.175rem;
+    border-left: 2px solid transparent;
+    line-height: 1.4;
+}
+.left-nav a:hover {
+    color: var(--green);
+    border-left-color: var(--green);
+    text-decoration: none;
+}
+.left-nav a.active {
+    color: var(--green);
+    border-left-color: var(--green);
+    font-weight: 600;
+}
+
+ 
+.right-sidebar {
+    position: sticky;
+    top: 40px;
+}
+.sidebar-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #444;
+    margin: 0 0 8px;
+    padding-left: 10px;
+}
+ 
+#TableOfContents ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+#TableOfContents li { margin: 0; }
+#TableOfContents a {
+    display: block;
+    color: var(--dim);
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 0.86rem;
+    padding: 3px 0 3px 10px;
+    border-left: 2px solid transparent;
+    line-height: 1.5;
+}
+#TableOfContents a:hover {
+    color: var(--green);
+    border-left-color: var(--green);
+    text-decoration: none;
+}
+
+ 
+.content { min-width: 0; }
+
+ 
+h1 { color: var(--green); font-size: 1.85rem; line-height: 1.3; margin-top: 0; }
+h2 { color: var(--green); border-left: 5px solid var(--green); padding-left: 15px; margin-top: 2.5rem; }
+h3 { color: var(--green); padding-left: 22px; }
+a { color: var(--green); text-decoration: none; font-weight: bold; }
+a:hover { text-decoration: underline; color: white; }
+p { margin-bottom: 1.2rem; }
+strong { color: white; }
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+ul, ol { padding-left: 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+ 
+pre {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green);
+    padding: 16px 20px;
+    overflow-x: auto;
+    border-radius: 4px;
+    margin: 1.5rem 0;
+}
+code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.88rem;
+    color: var(--green);
+}
+pre code { color: var(--text); background: none; }
+
+ 
+.post-meta {
+    color: var(--muted);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+.back-link {
+    display: inline-block;
+    color: var(--muted);
+    font-weight: normal;
+    margin-bottom: 0.6rem;
+}
+.back-link:hover { color: var(--green); text-decoration: none; }
+
+ 
+.post-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.tag {
+    font-size: 0.76rem;
+    color: var(--dim);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: normal;
+    text-decoration: none;
+}
+.tag:hover { color: var(--green); border-color: var(--green); text-decoration: none; }
+
+ 
+.card-list { list-style: none; padding: 0; margin: 0; }
+.card {
+    background: var(--card-bg);
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+.card-title { }
+.card-title a { color: var(--green); }
+.card p {
+    color: var(--text);
+    margin: 10px 0 0;
+    line-height: 1.6;
+    font-weight: normal;
+}
+.card-meta { color: var(--muted); margin-top: 8px; }
+
+ 
+.bio-card {
+    background: var(--card-bg);
+    padding: 22px 26px;
+    margin-bottom: 24px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+.bio-card p { margin-bottom: 0.9rem; }
+.bio-card p:last-child { margin-bottom: 0; }
+
+ 
+.section-intro {
+    color: var(--dim);
+    border-left: 3px solid var(--border);
+    padding-left: 16px;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+.section-intro p { margin-bottom: 0.6rem; }
+.section-intro p:last-child { margin-bottom: 0; }
+
+ 
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 14px 20px;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 0.88rem;
+    text-align: center;
+}
+.site-footer a { color: var(--muted); font-weight: normal; }
+.site-footer a:hover { color: var(--green); text-decoration: none; }
+
+ 
+@media (max-width: 1340px) {
+    .page-kind-page .right-sidebar { display: none; }
+    .page-kind-page .site-grid {
+        grid-template-columns: 190px minmax(0, 880px);
+        max-width: 1190px;
     }
-    </script>
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is the difference between llama.cpp and Ollama?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "llama.cpp is the raw C++ inference engine. Ollama wraps it with a management layer and background service, adding overhead and abstracting hardware control."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Why compile llama.cpp from source instead of using a prebuilt binary?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Compiling with GGML_NATIVE=ON auto-enables AVX2 and AVX-512 on supported hardware, yielding better throughput than generic binaries built for broad compatibility."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What hardware is required to run 7B-8B models on CPU-only Linux?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Intel 11th Gen or AMD Ryzen 5000 series or newer, 12GB+ RAM, and any modern Linux distribution. No GPU is required."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I check if my CPU supports AVX-512?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Run: lscpu | grep -E --color=always 'avx(2|512)'. Look for avx512_vnni in the output for AI-optimized instruction support."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the best quantization for a 12GB RAM system?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Q4_K_M (4-bit quantization) provides the best balance of output quality and memory efficiency for 7B-8B parameter models on 12GB RAM."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "When should I remove the --mlock flag?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Remove --mlock if model loading takes longer than 4-5 minutes. This indicates the system lacks sufficient free RAM to pin the model, risking a hard failure."
-          }
-        }
-      ]
+}
+@media (max-width: 860px) {
+    .site-grid,
+    .page-kind-page .site-grid {
+        grid-template-columns: 1fr;
+        padding: 24px 20px;
+        max-width: 100%;
     }
-    </script>
+    .left-sidebar { display: none; }
+    .mobile-nav { display: flex; }
+    body { font-size: 1.25rem; }
+}
+</style>
 
-    <style>
-        :root {
-            --terminal-green: #98c9a3;
-            --text: #e0e0e0;
-            --bg: #0d0d0d;
-            --card-bg: #1e1e1e;
-            --card-border: #2a2a2a;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.8;
-            color: var(--text);
-            background: var(--bg);
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-            font-size: 1.1rem;
-        }
-        header {
-            border-bottom: 3px solid var(--terminal-green);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        h1.site-title { margin: 0; color: var(--terminal-green); font-size: 2.5rem; }
-        h1.post-title { color: var(--terminal-green); font-size: 1.8rem; line-height: 1.3; margin-bottom: 0.5rem; }
-        h2 { color: var(--terminal-green); border-left: 5px solid var(--terminal-green); padding-left: 15px; margin-top: 2.5rem; }
-        h3 { color: var(--terminal-green); padding-left: 22px; }
-        a { color: var(--terminal-green); text-decoration: none; font-weight: bold; }
-        a:hover { text-decoration: underline; color: white; }
-        .post-meta { color: #666; font-size: 0.95rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--card-border); }
-        p { margin-bottom: 1.2rem; }
-        hr { border: none; border-top: 1px solid var(--card-border); margin: 2.5rem 0; }
-        pre {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-left: 4px solid var(--terminal-green);
-            padding: 16px 20px;
-            overflow-x: auto;
-            border-radius: 4px;
-            margin: 1.5rem 0;
-        }
-        code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.9rem; color: var(--terminal-green); }
-        pre code { color: var(--text); }
-        strong { color: white; }
-        footer { margin-top: 50px; font-size: 1rem; color: #555; border-top: 1px solid #2a2a2a; padding-top: 10px; }
-    </style>
+    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Article", "TechArticle"],
+  "headline": "\"llama.cpp Bare-Metal on Linux\"",
+  "description": "\"A step-by-step guide to compiling llama.cpp from source with native AVX-512 optimizations, bypassing Ollama for faster local LLM inference without a GPU. Covers hardware requirements, AVX-512 detection, source compilation, model quantization, and command-line operation.\"",
+  "author": {
+    "@type": "Person",
+    "name": "Ben Santora",
+    "url": "https://github.com/bensantora-tech"
+  },
+  "datePublished": "2026-01-20",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http:\/\/localhost:1313\/posts\/llama-cpp-bare-metal-linux\/"
+  },
+  "keywords": "\"linux, llm, bare-metal, cpu\""
+}
+</script>
+
 </head>
-<body>
-    <header>
-        <h1 class="site-title">Ben Santora</h1>
+<body class="page-kind-page">
+    <header class="site-header">
+        <h1><a href="/">Ben Santora</a></h1>
         <p><strong>Linux Operating System</strong></p>
     </header>
 
-    <main>
-        <h1 class="post-title">llama.cpp Bare-Metal on Linux</h1>
-        <div class="post-meta">January 20, 2026 &mdash; Ben Santora</div>
-        <p>Compiling llama.cpp from source with native CPU optimizations eliminates wrapper overhead and maximizes inference performance on Linux systems without dedicated GPUs. This guide walks through every step — from auditing your hardware to running your first local conversation.</p>
+    
+    <nav class="mobile-nav">
+        <a href="/" class="">Home</a>
+        <a href="/posts/" class="active">Posts</a>
+        <a href="/notes/" class="">Notes</a>
+        <a href="/tools/" class="">Tools</a>
+        <a href="/hardware/" class="">Hardware</a>
+        <a href="/links/" class="">Links</a>
+    </nav>
+
+    <div class="site-grid">
+        <aside class="left-sidebar">
+            
+<nav class="left-nav">
+    <span class="nav-label">Site</span>
+    <a href="/" class="">Home</a>
+
+    <span class="nav-label">Writing</span>
+    <a href="/posts/" class="active">Posts</a>
+    <a href="/notes/" class="">Notes</a>
+
+    <span class="nav-label">Reference</span>
+    <a href="/tools/" class="">Tools</a>
+    <a href="/hardware/" class="">Hardware</a>
+    <a href="/links/" class="">Links</a>
+
+    <span class="nav-label">External</span>
+    <a href="https://github.com/bensantora-tech" target="_blank" rel="noopener">GitHub ↗</a>
+</nav>
+
+        </aside>
+
+        <main class="content">
+            
+    <a class="back-link" href="/posts/">← Posts</a>
+    <h1>llama.cpp Bare-Metal on Linux</h1>
+    <div class="post-meta">
+        January 20, 2026 &mdash; Ben Santora
+        
+        <div class="post-tags">
+            <a href="/tags/linux/" class="tag">linux</a><a href="/tags/llm/" class="tag">llm</a><a href="/tags/bare-metal/" class="tag">bare-metal</a><a href="/tags/cpu/" class="tag">cpu</a>
+        </div>
+        
+    </div>
+    <p>Compiling llama.cpp from source with native CPU optimizations eliminates wrapper overhead and maximizes inference performance on Linux systems without dedicated GPUs. This guide walks through every step — from auditing your hardware to running your first local conversation.</p>
 <h2 id="what-is-the-difference-between-llamacpp-and-ollama">What Is the Difference Between llama.cpp and Ollama?</h2>
 <p>llama.cpp is the inference engine: a raw C++ implementation of the Llama architecture that performs the core matrix math of AI inference directly on your hardware. Ollama is a wrapper around it — bundling llama.cpp with a Go-based management layer, a model registry, and a persistent background service that consumes RAM even when you&rsquo;re not using it.</p>
 <p>Running llama.cpp directly gives you three concrete advantages. First, transparency: when the process ends, your RAM is fully released with no hidden daemons lingering. Second, performance: direct execution yields measurably faster token generation by eliminating software abstraction layers. Third, hardware mastery: you can explicitly target your CPU&rsquo;s instruction sets — like AVX-512 — which generic prebuilt binaries often disable for broad compatibility.</p>
@@ -193,11 +423,33 @@ Q4_K_M offers the best quality-to-memory tradeoff for 7B–8B models on 12GB RAM
 <p><strong>Q: When should I remove the &ndash;mlock flag?</strong>
 Remove it if model loading takes more than 4–5 minutes, which indicates insufficient RAM to hold the model in physical memory.</p>
 
-    </main>
 
-    <footer>
-        <p>Ben Santora | &copy; 2026</p>
-        <p><a href="https://github.com/bensantora-tech" target="_blank" rel="noopener noreferrer">github.com/bensantora-tech</a></p>
-    </footer>
+        </main>
+
+        <aside class="right-sidebar">
+            
+
+<p class="sidebar-label">Contents</p>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-is-the-difference-between-llamacpp-and-ollama">What Is the Difference Between llama.cpp and Ollama?</a></li>
+    <li><a href="#what-hardware-do-you-need-to-run-local-llms-on-linux">What Hardware Do You Need to Run Local LLMs on Linux?</a></li>
+    <li><a href="#how-to-check-if-your-cpu-supports-avx-512">How to Check if Your CPU Supports AVX-512</a></li>
+    <li><a href="#how-to-build-llamacpp-from-source-with-native-cpu-optimizations">How to Build llama.cpp from Source with Native CPU Optimizations</a></li>
+    <li><a href="#what-is-the-best-quantization-for-a-12gb-ram-system">What Is the Best Quantization for a 12GB RAM System?</a></li>
+    <li><a href="#how-to-run-llamacpp-from-the-command-line">How to Run llama.cpp from the Command Line</a></li>
+    <li><a href="#troubleshooting-slow-load-times">Troubleshooting Slow Load Times</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+</nav>
+
+
+        </aside>
+    </div>
+
+    <footer class="site-footer">
+    <p>Ben Santora &copy; 2026 &mdash; <a href="https://github.com/bensantora-tech" target="_blank" rel="noopener noreferrer">github.com/bensantora-tech</a></p>
+</footer>
+
 </body>
 </html>

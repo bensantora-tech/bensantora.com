@@ -2,146 +2,374 @@
 <html lang="en">
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FFmpeg Mandelbrot Generator | Ben Santora</title>
-    <meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FFmpeg Has a Mandelbrot Generator Built In | Ben Santora</title>
+<meta name="description" content="Most people use FFmpeg to convert video files. Few know it ships with a virtual device system called lavfi that generates video from pure math — no input file, no external tools, nothing to install. It&#39;s already on your system.">
+<meta name="author" content="Ben Santora">
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": ["Article", "TechArticle"],
-      "headline": "\"FFmpeg Mandelbrot Generator\"",
-      "description": "null",
-      "author": {
-        "@type": "Person",
-        "name": "Ben Santora"
-      },
-      "datePublished": "2026-01-20",
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "http:\/\/localhost:1313\/posts\/ffmpeg-mandelbrot\/"
-      },
-      "keywords": "llama.cpp, bare metal inference, CPU-only LLM, AVX-512, Linux, GGUF, local AI, Ollama alternative, build from source, quantization"
+<meta property="og:title" content="FFmpeg Has a Mandelbrot Generator Built In">
+<meta property="og:description" content="Most people use FFmpeg to convert video files. Few know it ships with a virtual device system called lavfi that generates video from pure math — no input file, no external tools, nothing to install. It&#39;s already on your system.">
+<meta property="og:url" content="http://localhost:1313/posts/ffmpeg-mandelbrot/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Ben Santora">
+
+<link rel="alternate" type="application/rss+xml" title="Ben Santora" href="/index.xml">
+<link rel="alternate" type="application/rss+xml" title="Posts — Ben Santora" href="/posts/index.xml">
+
+<style>
+ 
+:root {
+    --green:   #98c9a3;
+    --text:    #e0e0e0;
+    --bg:      #0d0d0d;
+    --card-bg: #1e1e1e;
+    --border:  #2a2a2a;
+    --muted:   #666;
+    --dim:     #888;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--bg);
+    margin: 0;
+    padding: 0;
+    font-size: 1.3rem;
+}
+
+ 
+.site-header {
+    border-bottom: 3px solid var(--green);
+    text-align: center;
+    padding: 28px 20px 18px;
+}
+.site-header h1 { margin: 0; font-size: 2.2rem; }
+.site-header h1 a { color: var(--green); text-decoration: none; }
+.site-header h1 a:hover { color: white; text-decoration: none; }
+.site-header p { margin: 4px 0 0; }
+
+ 
+.mobile-nav {
+    display: none;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+}
+.mobile-nav a {
+    display: inline-block;
+    color: var(--dim);
+    text-decoration: none;
+    font-weight: normal;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+}
+.mobile-nav a:hover,
+.mobile-nav a.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+    text-decoration: none;
+}
+
+ 
+.site-grid {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 880px);
+    column-gap: 40px;
+    max-width: 1190px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    align-items: start;
+}
+ 
+.page-kind-page .site-grid {
+    grid-template-columns: 190px minmax(0, 880px) 210px;
+    max-width: 1400px;
+}
+.right-sidebar { display: none; }
+.page-kind-page .right-sidebar { display: block; }
+
+ 
+.left-sidebar {
+    position: sticky;
+    top: 40px;
+}
+.left-nav { display: flex; flex-direction: column; }
+.nav-label {
+    font-size: 0.965rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #444;
+    padding: 14px 10px 4px;
+    user-select: none;
+}
+.left-nav a {
+    color: var(--dim);
+    text-decoration: none;
+    font-weight: normal;
+    padding: 6px 10px;
+    font-size: 1.175rem;
+    border-left: 2px solid transparent;
+    line-height: 1.4;
+}
+.left-nav a:hover {
+    color: var(--green);
+    border-left-color: var(--green);
+    text-decoration: none;
+}
+.left-nav a.active {
+    color: var(--green);
+    border-left-color: var(--green);
+    font-weight: 600;
+}
+
+ 
+.right-sidebar {
+    position: sticky;
+    top: 40px;
+}
+.sidebar-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #444;
+    margin: 0 0 8px;
+    padding-left: 10px;
+}
+ 
+#TableOfContents ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+#TableOfContents li { margin: 0; }
+#TableOfContents a {
+    display: block;
+    color: var(--dim);
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 0.86rem;
+    padding: 3px 0 3px 10px;
+    border-left: 2px solid transparent;
+    line-height: 1.5;
+}
+#TableOfContents a:hover {
+    color: var(--green);
+    border-left-color: var(--green);
+    text-decoration: none;
+}
+
+ 
+.content { min-width: 0; }
+
+ 
+h1 { color: var(--green); font-size: 1.85rem; line-height: 1.3; margin-top: 0; }
+h2 { color: var(--green); border-left: 5px solid var(--green); padding-left: 15px; margin-top: 2.5rem; }
+h3 { color: var(--green); padding-left: 22px; }
+a { color: var(--green); text-decoration: none; font-weight: bold; }
+a:hover { text-decoration: underline; color: white; }
+p { margin-bottom: 1.2rem; }
+strong { color: white; }
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+ul, ol { padding-left: 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+ 
+pre {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green);
+    padding: 16px 20px;
+    overflow-x: auto;
+    border-radius: 4px;
+    margin: 1.5rem 0;
+}
+code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.88rem;
+    color: var(--green);
+}
+pre code { color: var(--text); background: none; }
+
+ 
+.post-meta {
+    color: var(--muted);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+.back-link {
+    display: inline-block;
+    color: var(--muted);
+    font-weight: normal;
+    margin-bottom: 0.6rem;
+}
+.back-link:hover { color: var(--green); text-decoration: none; }
+
+ 
+.post-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.tag {
+    font-size: 0.76rem;
+    color: var(--dim);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: normal;
+    text-decoration: none;
+}
+.tag:hover { color: var(--green); border-color: var(--green); text-decoration: none; }
+
+ 
+.card-list { list-style: none; padding: 0; margin: 0; }
+.card {
+    background: var(--card-bg);
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+.card-title { }
+.card-title a { color: var(--green); }
+.card p {
+    color: var(--text);
+    margin: 10px 0 0;
+    line-height: 1.6;
+    font-weight: normal;
+}
+.card-meta { color: var(--muted); margin-top: 8px; }
+
+ 
+.bio-card {
+    background: var(--card-bg);
+    padding: 22px 26px;
+    margin-bottom: 24px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+.bio-card p { margin-bottom: 0.9rem; }
+.bio-card p:last-child { margin-bottom: 0; }
+
+ 
+.section-intro {
+    color: var(--dim);
+    border-left: 3px solid var(--border);
+    padding-left: 16px;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+.section-intro p { margin-bottom: 0.6rem; }
+.section-intro p:last-child { margin-bottom: 0; }
+
+ 
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 14px 20px;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 0.88rem;
+    text-align: center;
+}
+.site-footer a { color: var(--muted); font-weight: normal; }
+.site-footer a:hover { color: var(--green); text-decoration: none; }
+
+ 
+@media (max-width: 1340px) {
+    .page-kind-page .right-sidebar { display: none; }
+    .page-kind-page .site-grid {
+        grid-template-columns: 190px minmax(0, 880px);
+        max-width: 1190px;
     }
-    </script>
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is the difference between llama.cpp and Ollama?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "llama.cpp is the raw C++ inference engine. Ollama wraps it with a management layer and background service, adding overhead and abstracting hardware control."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Why compile llama.cpp from source instead of using a prebuilt binary?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Compiling with GGML_NATIVE=ON auto-enables AVX2 and AVX-512 on supported hardware, yielding better throughput than generic binaries built for broad compatibility."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What hardware is required to run 7B-8B models on CPU-only Linux?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Intel 11th Gen or AMD Ryzen 5000 series or newer, 12GB+ RAM, and any modern Linux distribution. No GPU is required."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I check if my CPU supports AVX-512?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Run: lscpu | grep -E --color=always 'avx(2|512)'. Look for avx512_vnni in the output for AI-optimized instruction support."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the best quantization for a 12GB RAM system?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Q4_K_M (4-bit quantization) provides the best balance of output quality and memory efficiency for 7B-8B parameter models on 12GB RAM."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "When should I remove the --mlock flag?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Remove --mlock if model loading takes longer than 4-5 minutes. This indicates the system lacks sufficient free RAM to pin the model, risking a hard failure."
-          }
-        }
-      ]
+}
+@media (max-width: 860px) {
+    .site-grid,
+    .page-kind-page .site-grid {
+        grid-template-columns: 1fr;
+        padding: 24px 20px;
+        max-width: 100%;
     }
-    </script>
+    .left-sidebar { display: none; }
+    .mobile-nav { display: flex; }
+    body { font-size: 1.25rem; }
+}
+</style>
 
-    <style>
-        :root {
-            --terminal-green: #98c9a3;
-            --text: #e0e0e0;
-            --bg: #0d0d0d;
-            --card-bg: #1e1e1e;
-            --card-border: #2a2a2a;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.8;
-            color: var(--text);
-            background: var(--bg);
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-            font-size: 1.1rem;
-        }
-        header {
-            border-bottom: 3px solid var(--terminal-green);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        h1.site-title { margin: 0; color: var(--terminal-green); font-size: 2.5rem; }
-        h1.post-title { color: var(--terminal-green); font-size: 1.8rem; line-height: 1.3; margin-bottom: 0.5rem; }
-        h2 { color: var(--terminal-green); border-left: 5px solid var(--terminal-green); padding-left: 15px; margin-top: 2.5rem; }
-        h3 { color: var(--terminal-green); padding-left: 22px; }
-        a { color: var(--terminal-green); text-decoration: none; font-weight: bold; }
-        a:hover { text-decoration: underline; color: white; }
-        .post-meta { color: #666; font-size: 0.95rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--card-border); }
-        p { margin-bottom: 1.2rem; }
-        hr { border: none; border-top: 1px solid var(--card-border); margin: 2.5rem 0; }
-        pre {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-left: 4px solid var(--terminal-green);
-            padding: 16px 20px;
-            overflow-x: auto;
-            border-radius: 4px;
-            margin: 1.5rem 0;
-        }
-        code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.9rem; color: var(--terminal-green); }
-        pre code { color: var(--text); }
-        strong { color: white; }
-        footer { margin-top: 50px; font-size: 1rem; color: #555; border-top: 1px solid #2a2a2a; padding-top: 10px; }
-    </style>
+    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Article", "TechArticle"],
+  "headline": "\"FFmpeg Has a Mandelbrot Generator Built In\"",
+  "description": "\"Most people use FFmpeg to convert video files. Few know it ships with a virtual device system called lavfi that generates video from pure math — no input file, no external tools, nothing to install. It's already on your system.\"",
+  "author": {
+    "@type": "Person",
+    "name": "Ben Santora",
+    "url": "https://github.com/bensantora-tech"
+  },
+  "datePublished": "2026-01-20",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http:\/\/localhost:1313\/posts\/ffmpeg-mandelbrot\/"
+  },
+  "keywords": "\"linux, ffmpeg, video\""
+}
+</script>
+
 </head>
-<body>
-    <header>
-        <h1 class="site-title">Ben Santora</h1>
+<body class="page-kind-page">
+    <header class="site-header">
+        <h1><a href="/">Ben Santora</a></h1>
         <p><strong>Linux Operating System</strong></p>
     </header>
 
-    <main>
-        <h1 class="post-title">FFmpeg Mandelbrot Generator</h1>
-        <div class="post-meta">January 20, 2026 &mdash; Ben Santora</div>
-        <h1 id="ffmpeg-has-a-mandelbrot-generator-built-in">FFmpeg Has a Mandelbrot Generator Built In</h1>
-<p>By Ben Santora</p>
-<p>Most people use FFmpeg to convert video files. Few know it ships with a virtual device system called <strong>lavfi</strong> that generates video from pure math — no input file, no external tools, nothing to install. It&rsquo;s already on your system.</p>
+    
+    <nav class="mobile-nav">
+        <a href="/" class="">Home</a>
+        <a href="/posts/" class="active">Posts</a>
+        <a href="/notes/" class="">Notes</a>
+        <a href="/tools/" class="">Tools</a>
+        <a href="/hardware/" class="">Hardware</a>
+        <a href="/links/" class="">Links</a>
+    </nav>
+
+    <div class="site-grid">
+        <aside class="left-sidebar">
+            
+<nav class="left-nav">
+    <span class="nav-label">Site</span>
+    <a href="/" class="">Home</a>
+
+    <span class="nav-label">Writing</span>
+    <a href="/posts/" class="active">Posts</a>
+    <a href="/notes/" class="">Notes</a>
+
+    <span class="nav-label">Reference</span>
+    <a href="/tools/" class="">Tools</a>
+    <a href="/hardware/" class="">Hardware</a>
+    <a href="/links/" class="">Links</a>
+
+    <span class="nav-label">External</span>
+    <a href="https://github.com/bensantora-tech" target="_blank" rel="noopener">GitHub ↗</a>
+</nav>
+
+        </aside>
+
+        <main class="content">
+            
+    <a class="back-link" href="/posts/">← Posts</a>
+    <h1>FFmpeg Has a Mandelbrot Generator Built In</h1>
+    <div class="post-meta">
+        January 20, 2026 &mdash; Ben Santora
+        
+        <div class="post-tags">
+            <a href="/tags/linux/" class="tag">linux</a><a href="/tags/ffmpeg/" class="tag">ffmpeg</a><a href="/tags/video/" class="tag">video</a>
+        </div>
+        
+    </div>
+    <p>Most people use FFmpeg to convert video files. Few know it ships with a virtual device system called <strong>lavfi</strong> that generates video from pure math — no input file, no external tools, nothing to install. It&rsquo;s already on your system.</p>
 <hr>
 <h2 id="check-your-ffmpeg-install">Check Your FFmpeg Install</h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ffmpeg -version
@@ -180,11 +408,31 @@
 <hr>
 <p><em>Tested on Debian, CrunchBang++. FFmpeg 6.x. CPU-only, no GPU required.</em></p>
 
-    </main>
 
-    <footer>
-        <p>Ben Santora | &copy; 2026</p>
-        <p><a href="https://github.com/bensantora-tech" target="_blank" rel="noopener noreferrer">github.com/bensantora-tech</a></p>
-    </footer>
+        </main>
+
+        <aside class="right-sidebar">
+            
+
+<p class="sidebar-label">Contents</p>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#check-your-ffmpeg-install">Check Your FFmpeg Install</a></li>
+    <li><a href="#generate-a-mandelbrot-and-save-it">Generate a Mandelbrot and Save It</a></li>
+    <li><a href="#play-it-directly--no-file-written">Play It Directly — No File Written</a></li>
+    <li><a href="#add-color-rotation">Add Color Rotation</a></li>
+    <li><a href="#watch-it-as-a-spectrum--fft-view">Watch It as a Spectrum — FFT View</a></li>
+    <li><a href="#the-bigger-point">The Bigger Point</a></li>
+  </ul>
+</nav>
+
+
+        </aside>
+    </div>
+
+    <footer class="site-footer">
+    <p>Ben Santora &copy; 2026 &mdash; <a href="https://github.com/bensantora-tech" target="_blank" rel="noopener noreferrer">github.com/bensantora-tech</a></p>
+</footer>
+
 </body>
 </html>

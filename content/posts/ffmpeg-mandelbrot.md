@@ -1,11 +1,9 @@
 ---
-title: "FFmpeg Mandelbrot Generator"
+title: "FFmpeg Has a Mandelbrot Generator Built In"
 date: 2026-01-20
+description: "Most people use FFmpeg to convert video files. Few know it ships with a virtual device system called lavfi that generates video from pure math — no input file, no external tools, nothing to install. It's already on your system."
+tags: ["linux", "ffmpeg", "video"]
 ---
-
-# FFmpeg Has a Mandelbrot Generator Built In
-
-By Ben Santora
 
 Most people use FFmpeg to convert video files. Few know it ships with a virtual device system called **lavfi** that generates video from pure math — no input file, no external tools, nothing to install. It's already on your system.
 
