@@ -35,6 +35,8 @@ What each parameter does:
 
 Watch the fps counter in the terminal. On a CPU-only machine `maxiter=100` keeps it moving. Drop to `50` if it's still slow. Raise to `500+` for more fractal detail at the cost of render time.
 
+`maxiter` is the iteration ceiling per pixel — how hard it tries to determine whether a point escapes to infinity. At low zoom levels it barely matters. As the animation zooms deeper into the fractal boundary, low `maxiter` causes the edges to go flat and blocky. If you're rendering a zoom sequence, raise it proportionally.
+
 ---
 
 ## Play It Directly — No File Written
@@ -58,13 +60,15 @@ ffmpeg -f lavfi -i "mandelbrot=size=640x360:rate=24:maxiter=100" \
 
 ---
 
-## Watch It as a Spectrum — FFT View
+## Zoom Into the Boundary
+
+The default animation zooms toward a fixed point. You can control where it zooms and how fast:
 
 ```bash
-ffplay -showmode 1 mandelbrot.mp4
+ffplay -f lavfi "mandelbrot=size=640x360:rate=24:maxiter=500:start_x=-0.7435:start_y=0.1314:start_scale=3.0:end_scale=0.001"
 ```
 
-Displays the frequency content of the audio track. No audio here, but use `-showmode 1` on any music file to see sound as physics.
+`start_x` and `start_y` set the target coordinate in the complex plane. `start_scale` and `end_scale` control zoom range — smaller `end_scale` means deeper zoom. The boundary region around `-0.7435, 0.1314` is a classic target: high detail, long zoom runway.
 
 ---
 
